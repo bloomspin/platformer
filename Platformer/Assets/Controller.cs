@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-[SerializePrivateVariables]
 public class Controller : MonoBehaviour {
 	public bool UP = false;
 	public bool DOWN = false;
