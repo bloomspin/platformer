@@ -9,6 +9,7 @@ public class _Control : MonoBehaviour {
 	DateTime jumpStart = DateTime.Now;
 	float maxSpeed = 4.0f;
 	public bool jumping = false;
+    public bool Frozen = false;
 
 	public bool facingRight = true;
 
@@ -20,7 +21,8 @@ public class _Control : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (MainScript.JUMP) {
+        if (Frozen) return;
+        if (MainScript.JUMP) {
 			if (!jumping) {
 				jumpStart = DateTime.Now;
 				jumping = true;
