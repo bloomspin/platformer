@@ -2,6 +2,9 @@
 using System;
 using System.Collections;
 
+
+
+
 public class _Control : MonoBehaviour {
 	public GameObject GameMaster;
 	Controller MainScript;
@@ -36,32 +39,23 @@ public class _Control : MonoBehaviour {
 
 		if (MainScript.RIGHT) {
 	
-			hitbox.AddForce (new Vector2 (3, 0));
-			//if (this.gameObject.transform.rotation.y != 0){
-				//this.gameObject.transform.Translate(0f,0f,0f);
-			//}
-		
+			//Flip direction of player		
 			Flip(true);
 
-
+			hitbox.AddForce (new Vector2 (3, 0));
 			hitbox.velocity = Vector3.ClampMagnitude(hitbox.velocity, maxSpeed);
 
 		}
 
 		if (MainScript.LEFT) {
-			//if (this.gameObject.transform.rotation.y != 180){
-				//this.gameObject.transform.Translate(0f,180f,0f);
-			//}
 
+			//Flip direction of player
 			Flip(false);
 
-
 			hitbox.AddForce (new Vector2 (-3, 0));
-			
 			hitbox.velocity = Vector3.ClampMagnitude(hitbox.velocity, maxSpeed);
 			
 		}
-
 
 
 	}
@@ -84,6 +78,9 @@ public class _Control : MonoBehaviour {
 		transform.localScale = theScale;
 	
 	}
+
+
+
 
 
 }
