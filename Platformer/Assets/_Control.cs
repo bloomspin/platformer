@@ -10,6 +10,8 @@ public class _Control : MonoBehaviour {
 	float maxSpeed = 4.0f;
 	public bool jumping = false;
 
+	public bool facingRight = true;
+
 	// Use this for initialization
 	void Start () {
 		MainScript = GameMaster.GetComponent <Controller>();
@@ -35,18 +37,25 @@ public class _Control : MonoBehaviour {
 		if (MainScript.RIGHT) {
 	
 			hitbox.AddForce (new Vector2 (3, 0));
-			if (this.gameObject.transform.rotation.y != 0){
-			this.gameObject.transform.Rotate(new Vector3(0,180,0));
-			}
+			//if (this.gameObject.transform.rotation.y != 0){
+				//this.gameObject.transform.Translate(0f,0f,0f);
+			//}
+		
+			Flip(true);
+
 
 			hitbox.velocity = Vector3.ClampMagnitude(hitbox.velocity, maxSpeed);
 
 		}
 
 		if (MainScript.LEFT) {
-			if (this.gameObject.transform.rotation.y != 180){
-			this.gameObject.transform.Rotate(new Vector3(0,180,0));
-			}
+			//if (this.gameObject.transform.rotation.y != 180){
+				//this.gameObject.transform.Translate(0f,180f,0f);
+			//}
+
+			Flip(false);
+
+
 			hitbox.AddForce (new Vector2 (-3, 0));
 			
 			hitbox.velocity = Vector3.ClampMagnitude(hitbox.velocity, maxSpeed);
@@ -63,4 +72,18 @@ public class _Control : MonoBehaviour {
 			jumping = false;
 		}
 	}
+
+	void Flip(bool direction)
+	{
+		if (direction == facingRight) {return;}
+		facingRight = direction;
+		// Switch the way the player is labelled as facing
+		// Multiply the player's x local scale by -1
+		Vector3 theScale = transform.localScale;
+		theScale.x *= -1;
+		transform.localScale = theScale;
+	
+	}
+
+
 }

@@ -778,3 +778,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GameMaster: {fileID: 24113956}
   jumping: 0
+  facingRight: 1
