@@ -4,7 +4,7 @@ using System.Collections;
 public class Prompt : MonoBehaviour {
     public bool Old = false;
     public bool IsOpen = false;
-
+	public string Message = "";
 	// Use this for initialization
 	void Start () {
 	
@@ -15,7 +15,7 @@ public class Prompt : MonoBehaviour {
         if (Old) return;
         if (IsOpen)
         {
-            Debug.Log("prompt");
+            Debug.Log(Message);
             GameObject.Find("Character").GetComponent<_Control>().Frozen = false;
             Old = true;
         }
@@ -27,7 +27,7 @@ public class Prompt : MonoBehaviour {
         var player = collision.gameObject;
         if (player.tag.ToLower() == "player")
         {
-            player.GetComponent<_Control>().Frozen = false;
+            player.GetComponent<_Control>().Frozen = true;
             IsOpen = true;
         }
     }

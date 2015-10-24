@@ -12,7 +12,7 @@ public class _Control : MonoBehaviour {
 	DateTime jumpStart = DateTime.Now;
 	float maxSpeed = 4.0f;
 	public bool jumping = false;
-
+	public bool Frozen = false;
 	public bool facingRight = true;
 
 	// Use this for initialization
@@ -23,40 +23,42 @@ public class _Control : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (MainScript.JUMP) {
-			if (!jumping) {
-				jumpStart = DateTime.Now;
-				jumping = true;
+		if (!Frozen) {
+
+			if (MainScript.JUMP) {
+				if (!jumping) {
+					jumpStart = DateTime.Now;
+					jumping = true;
+				}
+
+				DateTime now = DateTime.Now;
+				TimeSpan diff = now - jumpStart;
+
+				if (diff.TotalMilliseconds < 100) {
+					hitbox.AddForce (new Vector2 (0, 30));
+				}
 			}
 
-			DateTime now = DateTime.Now;
-			TimeSpan diff = now - jumpStart;
-
-			if (diff.TotalMilliseconds < 100) {
-				hitbox.AddForce (new Vector2 (0, 30));
-			}
-		}
-
-		if (MainScript.RIGHT) {
+			if (MainScript.RIGHT) {
 	
-			//Flip direction of player		
-			Flip(true);
+				//Flip direction of player		
+				Flip (true);
 
-			hitbox.AddForce (new Vector2 (3, 0));
-			hitbox.velocity = Vector3.ClampMagnitude(hitbox.velocity, maxSpeed);
+				hitbox.AddForce (new Vector2 (3, 0));
+				hitbox.velocity = Vector3.ClampMagnitude (hitbox.velocity, maxSpeed);
 
-		}
+			}
 
-		if (MainScript.LEFT) {
+			if (MainScript.LEFT) {
 
-			//Flip direction of player
-			Flip(false);
+				//Flip direction of player
+				Flip (false);
 
-			hitbox.AddForce (new Vector2 (-3, 0));
-			hitbox.velocity = Vector3.ClampMagnitude(hitbox.velocity, maxSpeed);
+				hitbox.AddForce (new Vector2 (-3, 0));
+				hitbox.velocity = Vector3.ClampMagnitude (hitbox.velocity, maxSpeed);
 			
+			}
 		}
-
 
 	}
 
