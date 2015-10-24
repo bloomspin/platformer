@@ -24,8 +24,8 @@ public GameObject player;
 	
 		
 		//Follow Player
-		float x = player.transform.position.x;
-		float y = player.transform.position.y;
+		// float x = player.transform.position.x;
+		// float y = player.transform.position.y;
 
 		this.transform.position = new Vector3 (this.transform.position.x, this.transform.position.y, -10);
 

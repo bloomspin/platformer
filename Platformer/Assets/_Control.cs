@@ -9,8 +9,10 @@ public class _Control : MonoBehaviour {
 	public GameObject GameMaster;
 	Controller MainScript;
 	Rigidbody2D hitbox;
-	DateTime jumpStart = DateTime.Now;
-	float maxSpeed = 4.0f;
+	float currentHeight;
+	float maxSpeed = 8.0f;
+	float jumpHeight = 8.0f;
+
 	public bool jumping = false;
 	public bool Frozen = false;
 	public bool facingRight = true;
@@ -27,36 +29,39 @@ public class _Control : MonoBehaviour {
 
 			if (MainScript.JUMP) {
 				if (!jumping) {
-					jumpStart = DateTime.Now;
 					jumping = true;
-				}
 
-				DateTime now = DateTime.Now;
-				TimeSpan diff = now - jumpStart;
+					jumpHeight = 12.0f;
 
-				if (diff.TotalMilliseconds < 100) {
-					hitbox.AddForce (new Vector2 (0, 30));
-				}
+					var x = hitbox.velocity.x;
+					hitbox.velocity = new Vector2(x, jumpHeight);
+				}			
 			}
 
 			if (MainScript.RIGHT) {
-	
 				//Flip direction of player		
 				Flip (true);
 
-				hitbox.AddForce (new Vector2 (3, 0));
-				hitbox.velocity = Vector3.ClampMagnitude (hitbox.velocity, maxSpeed);
+				//hitbox.AddForce (new Vector2 (12, 0));
 
+				if (!jumping || (jumping && facingRight)){
+					if(hitbox.velocity.x< maxSpeed){
+						hitbox.velocity = new Vector2(10f, hitbox.velocity.y);
+					}
+				}
+				//hitbox.velocity = Vector3.ClampMagnitude(hitbox.velocity, maxSpeed);				
 			}
 
 			if (MainScript.LEFT) {
-
 				//Flip direction of player
 				Flip (false);
 
-				hitbox.AddForce (new Vector2 (-3, 0));
-				hitbox.velocity = Vector3.ClampMagnitude (hitbox.velocity, maxSpeed);
-			
+				if (!jumping || (jumping && !facingRight)){
+					if(hitbox.velocity.x> -maxSpeed){
+						hitbox.velocity = new Vector2(-10f, hitbox.velocity.y);
+					}
+				}
+				//hitbox.velocity = Vector3.ClampMagnitude (hitbox.velocity, maxSpeed);				
 			}
 		}
 
@@ -64,8 +69,23 @@ public class _Control : MonoBehaviour {
 
 	void OnCollisionEnter2D(Collision2D collision) {
 		string tag = collision.collider.gameObject.tag;
+		if (tag.ToLower () == "") {
+		}
+	}
+
+	void OnTriggerEnter2D(Collider2D collision) {
+		string tag = collision.gameObject.tag;
 		if (tag.ToLower () == "ground") {
 			jumping = false;
+			maxSpeed = 8.0f;
+		}
+	}
+
+	void OnTriggerStay2D(Collider2D collision) {
+		string tag = collision.gameObject.tag;
+		if (tag.ToLower () == "ground") {
+			jumping = false;
+			maxSpeed = 8.0f;
 		}
 	}
 
