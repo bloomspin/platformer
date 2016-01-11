@@ -2,11 +2,14 @@
 using System;
 using System.Collections;
 
-
-
-
 public class _Control : MonoBehaviour {
 	public GameObject GameMaster;
+	public GameObject back;
+	public GameObject front;
+
+	SubCollider leftCollider;
+	SubCollider frontCollider;
+
 	Controller MainScript;
 	Rigidbody2D hitbox;
 	float currentHeight;
@@ -16,11 +19,15 @@ public class _Control : MonoBehaviour {
 	public bool jumping = false;
 	public bool Frozen = false;
 	public bool facingRight = true;
+	public bool feetCollide = false;
 
 	// Use this for initialization
 	void Start () {
 		MainScript = GameMaster.GetComponent <Controller>();
 		hitbox = this.GetComponent<Rigidbody2D> ();
+
+		leftCollider = back.GetComponent<SubCollider> ();
+		frontCollider = front.GetComponent<SubCollider> ();
 	}
 
     // Update is called once per frame
@@ -32,65 +39,68 @@ public class _Control : MonoBehaviour {
 	// Fixed Update is called once per physics frame
     void FixedUpdate()
     {
-        if (Frozen) return;
-        float move_h = Input.GetAxis("Horizontal");        
+		if (Frozen)
+			return;
+		float move_h = Input.GetAxis ("Horizontal");
+		if (hitbox.velocity.normalized.y == 0) {
+			jumping = false;
+		}
 
-        if (MainScript.JUMP)
-        {
-            if (!jumping || hitbox.velocity.y == 0)
-            {
-                jumping = true;                
-                var x = hitbox.velocity.x;
-                //hitbox.velocity = new Vector2(x, move_v * jumpHeight);
-                hitbox.AddForce(new Vector2 (0, jumpHeight));
-            }
-        }
 
-        if (MainScript.RIGHT)
-        {
-            //Flip direction of player		
-            Flip(true);
-            if (!jumping || (jumping && facingRight))
-            {
-                if (hitbox.velocity.x < maxSpeed)
-                {
-                    hitbox.velocity = new Vector2(move_h * maxSpeed, hitbox.velocity.y);
-                }
-            }            
-        }
+		if (MainScript.JUMP) {
+			if (!jumping) {
+				jumping = true;                
+				var x = hitbox.velocity.x;
+				//hitbox.velocity = new Vector2(x, move_v * jumpHeight);
+				hitbox.AddForce (new Vector2 (0, jumpHeight));
+				Debug.Log("FIRED");
+			}
+		}
 
-        if (MainScript.LEFT)
-        {
-            //Flip direction of player
-            Flip(false);
+		if (MainScript.RIGHT) {
+			//Flip direction of player		
+			Flip (true);
+			if (!frontCollider.Colliding){
+				if (!jumping || (jumping && facingRight)) {
+					if (hitbox.velocity.x < maxSpeed) {
+						hitbox.velocity = new Vector2 (move_h * maxSpeed, hitbox.velocity.y);
+					}
+				}            
+			}
+		}
 
-            if (!jumping || (jumping && !facingRight))
-            {
-                if (hitbox.velocity.x > -maxSpeed)
-                {
-                    hitbox.velocity = new Vector2((move_h * maxSpeed), hitbox.velocity.y);
-                }
-            }            		
-        }
-    }
+		if (MainScript.LEFT) {
+			//Flip direction of player
+			Flip (false);
 
-	void OnCollisionEnter2D(Collision2D collision) {
-		string tag = collision.collider.gameObject.tag;
-		if (tag.ToLower () == "") {
+			if (!frontCollider.Colliding){
+				if (!jumping || (jumping && !facingRight)) {
+					if (hitbox.velocity.x > -maxSpeed) {
+						hitbox.velocity = new Vector2 ((move_h * maxSpeed), hitbox.velocity.y);
+					}
+				}
+			}
 		}
 	}
 
 	void OnTriggerEnter2D(Collider2D collision) {
 		string tag = collision.gameObject.tag;
 		if (tag.ToLower () == "ground") {
-			jumping = false;			
+			feetCollide = true;
 		}
 	}
 
 	void OnTriggerStay2D(Collider2D collision) {
 		string tag = collision.gameObject.tag;
 		if (tag.ToLower () == "ground") {
-			jumping = false;			
+			feetCollide = true;
+		}
+	}
+
+	void OnTriggerExit2D(Collider2D collision) {
+		string tag = collision.gameObject.tag;
+		if (tag.ToLower () == "ground") {
+			feetCollide = false;
 		}
 	}
 

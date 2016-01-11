@@ -14,11 +14,11 @@ public GameObject player;
 
 		//offset = transform.position - player.transform.position ;
 		position.y = transform.position.y;
-		hitbox = player.GetComponent<Rigidbody2D> ();
+		this.hitbox = player.GetComponent<Rigidbody2D> ();
 		playerScript = player.GetComponent<_Control> ();
 
 	}
-	
+	 
 	// Update is called once per frame
 	void Update () {
 	
