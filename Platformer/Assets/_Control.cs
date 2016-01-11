@@ -11,7 +11,7 @@ public class _Control : MonoBehaviour {
 	Rigidbody2D hitbox;
 	float currentHeight;
 	float maxSpeed = 8.0f;
-	float jumpHeight = 8.0f;
+	float jumpHeight = 700.0f;
 
 	public bool jumping = false;
 	public bool Frozen = false;
@@ -22,50 +22,57 @@ public class _Control : MonoBehaviour {
 		MainScript = GameMaster.GetComponent <Controller>();
 		hitbox = this.GetComponent<Rigidbody2D> ();
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		if (!Frozen) {
 
-			if (MainScript.JUMP) {
-				if (!jumping) {
-					jumping = true;
+    // Update is called once per frame
+    void Update()
+    {
 
-					jumpHeight = 12.0f;
+    }
 
-					var x = hitbox.velocity.x;
-					hitbox.velocity = new Vector2(x, jumpHeight);
-				}			
-			}
+	// Fixed Update is called once per physics frame
+    void FixedUpdate()
+    {
+        if (Frozen) return;
+        float move_h = Input.GetAxis("Horizontal");        
 
-			if (MainScript.RIGHT) {
-				//Flip direction of player		
-				Flip (true);
+        if (MainScript.JUMP)
+        {
+            if (!jumping || hitbox.velocity.y == 0)
+            {
+                jumping = true;                
+                var x = hitbox.velocity.x;
+                //hitbox.velocity = new Vector2(x, move_v * jumpHeight);
+                hitbox.AddForce(new Vector2 (0, jumpHeight));
+            }
+        }
 
-				//hitbox.AddForce (new Vector2 (12, 0));
+        if (MainScript.RIGHT)
+        {
+            //Flip direction of player		
+            Flip(true);
+            if (!jumping || (jumping && facingRight))
+            {
+                if (hitbox.velocity.x < maxSpeed)
+                {
+                    hitbox.velocity = new Vector2(move_h * maxSpeed, hitbox.velocity.y);
+                }
+            }            
+        }
 
-				if (!jumping || (jumping && facingRight)){
-					if(hitbox.velocity.x< maxSpeed){
-						hitbox.velocity = new Vector2(10f, hitbox.velocity.y);
-					}
-				}
-				//hitbox.velocity = Vector3.ClampMagnitude(hitbox.velocity, maxSpeed);				
-			}
+        if (MainScript.LEFT)
+        {
+            //Flip direction of player
+            Flip(false);
 
-			if (MainScript.LEFT) {
-				//Flip direction of player
-				Flip (false);
-
-				if (!jumping || (jumping && !facingRight)){
-					if(hitbox.velocity.x> -maxSpeed){
-						hitbox.velocity = new Vector2(-10f, hitbox.velocity.y);
-					}
-				}
-				//hitbox.velocity = Vector3.ClampMagnitude (hitbox.velocity, maxSpeed);				
-			}
-		}
-
-	}
+            if (!jumping || (jumping && !facingRight))
+            {
+                if (hitbox.velocity.x > -maxSpeed)
+                {
+                    hitbox.velocity = new Vector2((move_h * maxSpeed), hitbox.velocity.y);
+                }
+            }            		
+        }
+    }
 
 	void OnCollisionEnter2D(Collision2D collision) {
 		string tag = collision.collider.gameObject.tag;
@@ -76,16 +83,14 @@ public class _Control : MonoBehaviour {
 	void OnTriggerEnter2D(Collider2D collision) {
 		string tag = collision.gameObject.tag;
 		if (tag.ToLower () == "ground") {
-			jumping = false;
-			maxSpeed = 8.0f;
+			jumping = false;			
 		}
 	}
 
 	void OnTriggerStay2D(Collider2D collision) {
 		string tag = collision.gameObject.tag;
 		if (tag.ToLower () == "ground") {
-			jumping = false;
-			maxSpeed = 8.0f;
+			jumping = false;			
 		}
 	}
 
@@ -97,12 +102,6 @@ public class _Control : MonoBehaviour {
 		// Multiply the player's x local scale by -1
 		Vector3 theScale = transform.localScale;
 		theScale.x *= -1;
-		transform.localScale = theScale;
-	
+		transform.localScale = theScale;	
 	}
-
-
-
-
-
 }
